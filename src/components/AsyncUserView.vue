@@ -17,11 +17,19 @@
       <h2>{{ userData.address.street }}, {{ userData.address.city }}</h2>
       <p>{{ userData.website }}</p>
     </div>
+
+    <div
+      class="flex items-center gap-2 py-12 text-white cursor-pointer duration-150 hover:text-red-500"
+      @click="removeUser"
+    >
+      <i class="fa-solid fa-trash"></i>
+      <p>Remove User</p>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const getUserData = async () => {
@@ -37,5 +45,14 @@ const getUserData = async () => {
 };
 
 const userData = await getUserData();
-console.log(userData);
+
+const router = useRouter();
+const removeUser = () => {
+  const users = JSON.parse(localStorage.getItem("savedUsers"));
+  const updatedUsers = users.filter((user) => user.id !== +route.params.id);
+  localStorage.setItem("savedUsers", JSON.stringify(updatedUsers));
+  router.push({
+    name: "home",
+  });
+};
 </script>
