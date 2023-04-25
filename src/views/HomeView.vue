@@ -33,12 +33,21 @@
         </ul>
       </div>
     </div>
+    <div class="flex flex-col gap-4">
+      <Suspense>
+        <UserList />
+        <template #fallback>
+          <p>Loading...</p>
+        </template>
+      </Suspense>
+    </div>
   </main>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import UserList from "../components/UserList.vue";
 const searchQuery = ref("");
 const queryTimeout = ref(null);
 const foundPokemon = ref(null);

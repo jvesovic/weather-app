@@ -16,7 +16,9 @@
           @click="toggleModal"
         ></i>
         <i
+          v-if="route.query.preview"
           class="fa-solid fa-plus text-xl hover:text-weather-secondary duration-150 cursor-pointer"
+          @click="addUser"
         ></i>
       </div>
 
@@ -55,9 +57,31 @@
 </template>
 
 <script setup>
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import BaseModal from "./BaseModal.vue";
 import { ref } from "vue";
+
+const savedUsers = ref([]);
+const route = useRoute();
+const router = useRouter();
+
+const addUser = () => {
+  if (localStorage.getItem("savedUsers")) {
+    savedUsers.value = JSON.parse(localStorage.getItem("savedUsers"));
+  }
+
+  const userObj = {
+    id: +route.params.id,
+    username: route.query.username,
+  };
+
+  savedUsers.value.push(userObj);
+  localStorage.setItem("savedUsers", JSON.stringify(savedUsers.value));
+
+  let query = Object.assign({}, route.query);
+  delete query.preview;
+  router.replace({ query });
+};
 
 const modalActive = ref(null);
 const toggleModal = () => {
